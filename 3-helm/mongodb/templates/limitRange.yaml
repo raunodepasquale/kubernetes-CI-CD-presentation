@@ -1,0 +1,18 @@
+{{ if .Values.quota.usequota }}
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: database-limit-range
+  namespace: {{ .Values.namespace.name }}
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+      cpu: 500m
+    defaultRequest:
+      memory: 128Mi
+      cpu: 250m
+    type: Container
+{{ else }}
+# No LimitRange
+{{ end }} 

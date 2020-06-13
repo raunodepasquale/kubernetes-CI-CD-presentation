@@ -1,0 +1,12 @@
+namespace:
+    name: helmmongodbbackup
+    label: helmmongodbbackup
+    
+storage:
+    provisioner: kubernetes.io/no-provisioner
+
+repo:
+    private: true
+
+quota:
+    usequota: false

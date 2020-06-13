@@ -1,0 +1,15 @@
+{{ if .Values.quota.usequota }}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: database-resourcequota
+  namespace: {{ .Values.namespace.name }}
+spec:
+  hard:
+    requests.cpu: {{ .Values.quota.request.cpu }}
+    requests.memory: {{ .Values.quota.request.memory }}
+    limits.cpu: {{ .Values.quota.limits.cpu }}
+    limits.memory: {{ .Values.quota.limits.memory }}
+{{ else }}
+# No Quota
+{{ end }} 

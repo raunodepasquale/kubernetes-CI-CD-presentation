@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-hlservice
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    name: mongo
+    namespace: {{ .Values.namespace.name }}
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    role: mongo
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: {{ .Values.namespace.name }}
+spec:
+  selector:
+    matchLabels:
+      role: mongo 
+  serviceName: "mongo-hlservice"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        role: mongo
+        environment: test
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongo
+          {{ if .Values.repo.private }}
+          image: my.privaterepo.local/mongo:4.0.12
+          {{ else }} 
+          image: mongo:4.0.12
+          {{ end }} 
+          command:
+            - mongod
+            - "--replSet"
+            - mongok8s
+            - "--smallfiles"
+            - "--noprealloc"
+            - "--bind_ip"
+            - 0.0.0.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-persistent-storage
+              mountPath: /data/db
+        - name: mongo-sidecar
+          image: cvallance/mongo-k8s-sidecar
+          env:
+            - name: KUBE_NAMESPACE # optional parameter, set it only if you create a specific namespace
+              value: {{ .Values.namespace.name }}           
+            - name: MONGO_SIDECAR_POD_LABELS
+              value: "role=mongo,environment=test"
+            - name: KUBERNETES_MONGO_SERVICE_NAME
+              value: "mongo-hlservice"     
+            - name: KUBERNETES_CLUSTER_DOMAIN
+              value: "cluster.local" 
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "mongodelete" #set here your storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

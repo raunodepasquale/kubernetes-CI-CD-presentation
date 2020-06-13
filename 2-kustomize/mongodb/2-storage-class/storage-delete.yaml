@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mongodelete
+provisioner: kubernetes.io/azure-file
+reclaimPolicy: Delete
+parameters:
+ skuName: Standard_LRS

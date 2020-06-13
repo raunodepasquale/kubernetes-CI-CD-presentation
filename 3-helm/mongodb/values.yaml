@@ -1,0 +1,18 @@
+namespace:
+    name: helmmongodb
+    label: helmmongodb
+    
+storage:
+    provisioner: kubernetes.io/azure-file
+
+quota:
+    usequota: true
+    request:
+        cpu: 2
+        memory: 2Gi
+    limits:
+        cpu: 3
+        memory: 4Gi
+
+repo:
+    private: false

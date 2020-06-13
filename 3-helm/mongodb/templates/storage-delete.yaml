@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mongodelete
+provisioner: {{ .Values.storage.provisioner }}
+reclaimPolicy: Delete
+{{ if eq .Values.storage.provisioner "kubernetes.io/no-provisioner" }}
+volumeBindingMode: WaitForFirstConsumer
+{{ else if eq .Values.storage.provisioner "kubernetes.io/azure-file" }}
+parameters:
+ skuName: Standard_LRS
+{{ end }} 
