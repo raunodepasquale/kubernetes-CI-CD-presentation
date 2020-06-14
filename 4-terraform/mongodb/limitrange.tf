@@ -10,7 +10,7 @@ resource "kubernetes_limit_range" "tflimitrange" {
         cpu    = "500m"
         memory = "512Mi"
       }
-      defaultRequest = {
+      default_request = {
         cpu    = "250m"
         memory = "128Mi"
       }

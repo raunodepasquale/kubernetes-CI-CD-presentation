@@ -14,6 +14,7 @@ kubectl apply -f ./1-kubectl/mongodb/4-database
 
 4. Check resources created  
 kubectl get all --namespace databasetest  
+kubectl get StorageClass mongodelete  
 
 5. What about create a new replicaset?  
 If you want to deploy a new replica set in one other namespace or change the storage class or the label, you need to copy the YAML files used and edit them

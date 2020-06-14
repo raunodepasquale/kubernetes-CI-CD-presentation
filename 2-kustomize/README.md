@@ -8,6 +8,7 @@ kubectl apply -k ./2-kustomize/mongodb
 
 3. Check resources created  
 kubectl get all --namespace kustomizedemodb  
+kubectl get StorageClass mongodelete  
 
 4. What about create a new replicaset?  
 kubectl kustomize ./2-kustomize/secondsetup  

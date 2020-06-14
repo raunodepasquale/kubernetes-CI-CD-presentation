@@ -1,6 +1,6 @@
 resource "kubernetes_service" "tfservice" {
   metadata {
-    name = "mongo-hlservice"
+    name = var.mongoservicename
     namespace = var.namespace
     labels = {
       name = "mongo"
@@ -9,24 +9,24 @@ resource "kubernetes_service" "tfservice" {
   }
   spec {
     selector = {
-      role = kubernetes_stateful_set.tfmongo.metadata.0.labels.role
+      role = kubernetes_stateful_set.tfstatsetmongo.metadata.0.labels.role
     }
     port {
       port        = 27017
       target_port = 27017
     }
-    cluster_ip = None
+    cluster_ip = "None"
   }
 }
 
-resource "kubernetes_stateful_set" "tfmongo" {
+resource "kubernetes_stateful_set" "tfstatsetmongo" {
   metadata {
+    name = "mongo"
+    namespace = var.namespace
     labels = {
       role          = "mongo"
       environment   = "test"
     }
-    name = "mongo"
-    namespace = var.namespace
   }
   spec {
     replicas = 3
@@ -35,7 +35,7 @@ resource "kubernetes_stateful_set" "tfmongo" {
         role = "mongo"
       }
     }
-    service_name = kubernetes_service.tfservice.metadata.metadata.name
+    service_name = var.mongoservicename
     template {
       metadata {
         labels = {
@@ -86,6 +86,7 @@ resource "kubernetes_stateful_set" "tfmongo" {
               }
         }
       }
+    }
     volume_claim_template {
       metadata {
         name = "mongo-persistent-storage"
@@ -95,7 +96,7 @@ resource "kubernetes_stateful_set" "tfmongo" {
         access_modes       = ["ReadWriteOnce"]
         storage_class_name = "mongodelete"
 
-        resources {
+        resources  {
           requests = {
             storage = "1Gi"
           }
