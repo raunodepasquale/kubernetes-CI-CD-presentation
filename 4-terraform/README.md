@@ -10,14 +10,15 @@ terraform init
 terraform plan  
 
 4. Create the mongodb replicaset in its own namespace (storage class has been defined for usage in Azure AKS)  
-terrafom apply  
+terraform apply  
 
 4. Check resources created  
 kubectl get all --namespace terraformdbdemo  
 kubectl get StorageClass mongodelete  
 
-5. What about create a new replicaset?  (please note: we are using the same state file so it will mark what previosly created as to be destroyed and the new resources to be created, we will not create them now, this is just to demonstrate reusaage of same templates with different variables values)  
+5. What about create a new replicaset?  (please note: we are using the same state file so it will mark what previosly created as to be destroyed and the new resources to be created, we will not create them now, this is just to demonstrate reusaage of same templates with different variables values, if it is a new setup and not an update of an existing one specify a new state, as second example)  
 terraform plan -var="namespace=tfsecondtest"  
+terraform plan -var="namespace=tfsecondtest"  -state=secondstate.state
 
 6. Cleanup (due to the fact that terraform manages its state, we'll use terraform itself to delete what created, we can check using kubectl the actual deletion)  
 terraform destroy  
